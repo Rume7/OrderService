@@ -115,6 +115,11 @@ public class OrderProcessingService {
         return anOrder.orElse(null);
     }
 
+    public List<Order> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders;
+    }
+
     private String buildOrderURL(String exchangeUrlUsed) {
         StringBuilder builder = new StringBuilder(exchangeUrlUsed);
         builder.append("/").append(exchangeConfig.getApiKey()).append("/").append("order");

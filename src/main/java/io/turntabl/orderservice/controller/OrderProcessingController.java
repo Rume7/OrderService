@@ -5,11 +5,14 @@ import io.turntabl.orderservice.service.orderprocessing.OrderProcessingService;
 import io.turntabl.orderservice.service.validation.OrderValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("api/v1/orders")
 public class OrderProcessingController {
@@ -24,6 +27,7 @@ public class OrderProcessingController {
     private OrderProcessingService orderProcessingService;
 
     @PostMapping("/order")
+    @CrossOrigin(originPatterns = "*")
     public ResponseEntity<?> placeAnOrder(@RequestBody Order order) {
         boolean orderStatus = orderValidatorService.validateOrder(order);
         if (orderStatus) {
@@ -39,6 +43,15 @@ public class OrderProcessingController {
         }
     }
 
+
+    @GetMapping(value="/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(originPatterns = "*")
+    public ResponseEntity<?> getAllOrders(){
+        List<Order> allOrders = orderProcessingService.getAllOrders();
+        return ResponseEntity.status(HttpStatus.FOUND).body(allOrders);
+    }
+
+    @CrossOrigin(originPatterns = "*")
     @DeleteMapping("/cancel/{orderId}")
     public ResponseEntity<?> cancelAnOrder(@PathVariable("orderId") String id) {
         orderValidatorService.cancelOrder(id);

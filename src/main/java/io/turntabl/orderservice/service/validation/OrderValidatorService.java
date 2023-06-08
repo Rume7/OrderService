@@ -21,7 +21,7 @@ public class OrderValidatorService {
     }
 
     private boolean firstOrderValidation(Order order) {
-        return (isPriceSuitableFromExchange1(order) || isPriceSuitableFromExchange1(order)) &&
+        return (isPriceSuitableFromExchange1(order) || isPriceSuitableFromExchange2(order)) &&
                 canExchangesHandleBothQuantities(order);
     }
 
