@@ -16,8 +16,8 @@ public class OrderValidatorService {
     private ExchangeService exchangeService;
 
     public boolean validateOrder(Order order) {
-        return firstOrderValidation(order);
-        //return validateOrderForExchange1(order) || validateOrderForExchange2(order);
+        //return firstOrderValidation(order);
+        return validateOrderForExchange1(order) || validateOrderForExchange2(order);
     }
 
     private boolean firstOrderValidation(Order order) {

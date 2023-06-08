@@ -1,6 +1,8 @@
 package io.turntabl.orderservice.controller;
 
 import io.turntabl.orderservice.models.Order;
+import io.turntabl.orderservice.pubSub.RedisConfig;
+import io.turntabl.orderservice.pubSub.RedisPublisher;
 import io.turntabl.orderservice.service.orderprocessing.OrderProcessingService;
 import io.turntabl.orderservice.service.validation.OrderValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class OrderProcessingController {
     @Autowired
     private OrderProcessingService orderProcessingService;
 
+    @Autowired
+    private RedisPublisher redisPublisher;
+
     @PostMapping("/order")
     @CrossOrigin(originPatterns = "*")
     public ResponseEntity<?> placeAnOrder(@RequestBody Order order) {
@@ -36,9 +41,9 @@ public class OrderProcessingController {
             Order retrievedOrder = orderProcessingService.getAnOrder(id);
             return ResponseEntity.status(HttpStatus.CREATED).body(retrievedOrder);
         } else {
-            // Handle failed processed order => throw exception by sending message to client.
-//          // Send order to the redis under the topic of invalid orders.
-
+           // publish invalid orders to redis.
+            Object orderObject = order;
+            redisPublisher.publishMessage(orderObject.toString());
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(order);
         }
     }
